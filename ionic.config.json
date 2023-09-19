@@ -1,0 +1,7 @@
+{
+  "name": "prueba_paginacion",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
