@@ -1,16 +1,16 @@
-# Usa una imagen de Node.js como base
 FROM node:18-alpine
 
-WORKDIR /app
+# Instala las dependencias de NodeJS
+RUN npm install -g @ionic/cli
 
-COPY package.json ./
+# Copia el código del proyecto al contenedor
+COPY . /app
 
-RUN npm install
+# Instala las dependencias de Angular
+RUN cd /app && npm install
 
-COPY . .
+# Compila la aplicación Angular
+RUN cd /app && ionic build
 
-RUN npm run build
-
-EXPOSE 8080
-
-CMD npm run serve
+# Ejecuta la aplicación
+CMD ["ionic", "serve"]
