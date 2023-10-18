@@ -1,0 +1,127 @@
+<ion-card>
+  <ion-card-header>
+    <ion-label class="msg-bienvenido">
+      BIENVENIDO! {{ registroAportanteModel.primerNombre }}
+      {{ registroAportanteModel.primerApellido }}
+    </ion-label>
+  </ion-card-header>
+  <form [formGroup]="formularioDatosAdminEpsAfp">
+    <ion-item>
+      <ion-label>AFP Afiliado</ion-label>
+      <ion-select
+        item-content
+        formControlName="codigoAFPCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="codigoAfpChange($event)">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAdminEpsAfp.get('codigoAFP')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label>Indicador Tarifa Especial</ion-label>
+      <ion-select
+        item-content
+        formControlName="indicadorTarifaEspecialCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="indicadorTarifaEspecialChange()">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf=" formularioDatosAdminEpsAfp.get('indicadorTarifaEspecial')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label floating>Tarifa AFP</ion-label>
+      <ion-select
+        item-content
+        formControlName="tarifaAfpCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="calcularTotalAFP()">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAdminEpsAfp.get('tarifaAfp')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label floating>Total Pagar AFP</ion-label>
+      <ion-input
+        class="input-color"s
+        rows="1"
+        disabled
+        [value]="registroAportanteModel.totalPagoAfp | currency : 'USD' : 'symbol' : '1.0'">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>EPS afiliado</ion-label>
+      <ion-select
+        item-content
+        formControlName="codigoEPSCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="cargarTarifasEps($event)">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAdminEpsAfp.get('codigoEPS')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label floating>Tarifa EPS</ion-label>
+      <ion-select
+        item-content
+        formControlName="tarifaEpsCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="calcularTotalEPS()">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAdminEpsAfp.get('tarifaEps')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label floating>Total Pagar EPS</ion-label>
+      <ion-input
+        class="input-color"
+        rows="1"
+        disabled
+        [value]="registroAportanteModel.totalPagoEps | currency : 'USD' : 'symbol' : '1.0'">
+      </ion-input>
+    </ion-item>
+  </form>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="backDatosCotizante()">
+          <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+          Anterior
+        </ion-button></ion-col>
+      <ion-col>
+        <ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="irDatosAdminRiesgosCcf(formularioDatosAdminEpsAfp.valid)"
+          [disabled]="!formularioDatosAdminEpsAfp.valid || 
+          registroAportanteModel.codigoEPS.code == null ||
+          registroAportanteModel.codigoEPS.code.length == 0 ||
+          registroAportanteModel.codigoAFP.code == null ||
+          registroAportanteModel.codigoAFP.code.length == 0 ||
+          registroAportanteModel.tarifaAFP.code == ''">
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          Siguiente
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>

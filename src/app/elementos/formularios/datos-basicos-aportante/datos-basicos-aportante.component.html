@@ -1,0 +1,209 @@
+
+<ion-card>
+  <ion-card-header>
+    <ion-label class="msg-bienvenido">
+      BIENVENIDO! {{ registroAportanteModel.primerNombre }}
+      {{ registroAportanteModel.primerApellido }}
+    </ion-label>
+  </ion-card-header>
+  <form [formGroup]="formularioDatosBasicos">
+    <ion-item [disabled]="bloqueo">
+      <ion-label floating>Periodo:</ion-label>
+      <ion-datetime
+        class="input-color"
+        formControlName="periodoCtrl"
+        displayFormat="YYYY MM"
+        [cancelText]="'Cancelar'"
+        [doneText]="'Continuar'"
+        min="{{ frontModel.minFecha }}"
+        max="{{ frontModel.maxFecha }}">
+      </ion-datetime>
+    </ion-item>
+    <ion-item [disabled]="bloqueo">
+      <ion-label floating class="label-float">Tipo de documento:</ion-label>
+      <ion-select
+        item-content
+        formControlName="tipoDocumentoCtrl"
+        itemValueField="tipoDocumento"
+        itemTextField="descripcion"
+        class="search-bar"
+        (onChange)="tipoDocumentoChange($event)">
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Número de identificación:</ion-label>
+      <ion-input
+        class="input-color"
+        formControlName="numeroDocumentoCtrl"
+        [disabled]="bloqueo"
+        type="text"
+        (ionChange)="numeroDocumentoChange($event)">
+      </ion-input>
+    </ion-item>
+    <p color="danger" ion-text>{{ mensaje }}</p>
+    <div *ngIf="registroAportanteModel.showNames">
+      <ion-item>
+        <ion-label floating>Primer Nombre:</ion-label>
+        <ion-input
+          class="input-color"
+          formControlName="primerNombreCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('primerNombreCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <ion-item>
+        <ion-label floating>Segundo Nombre:</ion-label>
+        <ion-input class="input-color"
+          formControlName="segundoNombreCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Primer Apellido:</ion-label>
+        <ion-input
+          class="input-color"
+          formControlName="primerApellidoCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('primerApellidoCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <ion-item>
+        <ion-label floating>Segundo Apellido:</ion-label>
+        <ion-input
+          class="input-color"
+          formControlName="segundoApellidoCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+    </div>
+    <div *ngIf="registroAportanteModel.showBotonBDUA">
+      <ion-item>
+        <ion-label floating>Email:</ion-label>
+        <ion-input
+          class="input-color"
+          formControlName="emailCtrl"
+          type="email">
+        </ion-input>
+      </ion-item>
+      <!-- (keydown)="Y($event)" (contextmenu)="$event.preventDefault()" (middleclick)="$event.preventDefault()" (drop)="$event.preventDefault()"></ion-input> -->
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('emailCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('emailCtrl')?.hasError('pattern')">
+        El e-mail no es valido, verifique el formato
+      </p>
+      <ng-container *ngIf="cotizante69">
+        <ion-item>
+          <ion-label floating class="label-float">
+            Actividad Econ&oacute;mica:
+          </ion-label>
+          <ion-select
+            item-content
+            formControlName="actividadEconomicaCtrl"
+            itemValueField="code"
+            itemTextField="label"
+            class="search-bar"
+            (onChange)="actividadEconomicaChange($event)">
+          </ion-select>
+        </ion-item>
+        <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('actividadEconomicaCtrl')?.hasError('required')">
+          *Requerido
+        </p>
+      </ng-container>
+      <ion-item>
+        <ion-label floating>Celular</ion-label>
+        <ion-input
+          class="input-color"
+          maxlength="10"
+          formControlName="telefonoCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('telefonoCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('telefonoCtrl')?.hasError('celularValido')">
+        El celular no es valido, de tener 10 d&iacute;gitos e iniciar por 3
+      </p>
+      <ion-item>
+        <ion-label floating>Direccion</ion-label>
+        <ion-input
+          class="input-color"
+          formControlName="direccionCtrl"
+          type="text"></ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('direccionCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('direccionCtrl')?.hasError('pattern')">
+        La direccion no es valida, verifique que no tenga caracteres
+        especiales, longitud m&iacute;nimo 4 y m&aacute;ximo 40
+      </p>
+      <ng-container *ngIf="!listUnDef('departamentoList')">
+        <ion-item>
+          <ion-label floating class="label-float">Departamento:</ion-label>
+          <ion-select
+            item-content
+            formControlName="departamentoCtrl"
+            itemValueField="code"
+            itemTextField="label"
+            class="search-bar"
+            (onChange)="cargarMunicipios($event)">
+          </ion-select>
+        </ion-item>
+        <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('departamentoCtrl')?.hasError('required')">
+          *Requerido
+        </p>
+      </ng-container>
+      <app-load *ngIf="listUnDef('departamentoList')"></app-load>
+      <ng-container *ngIf="ModelCode('departamentoModel')">
+        <ion-item>
+          <ion-label floating class="label-float">Municipio:</ion-label>
+          <ion-select
+            item-content
+            formControlName="municipioCtrl"
+            itemValueField="code"
+            itemTextField="label"
+            class="search-bar"
+            (onChange)="municipioChange($event)">
+          </ion-select>
+          <app-load *ngIf="listUnDef('municipioList')"></app-load>
+        </ion-item>
+        <p color="danger" ion-text *ngIf="formularioDatosBasicos.get('municipioCtrl')?.hasError('required')">
+          *Requerido
+        </p>
+      </ng-container>
+    </div>
+  </form>
+  <div *ngIf="!registroAportanteModel.showBotonBDUA">
+    <ion-button
+      icon-left
+      size="medium"
+      expand="full"
+      [disabled]="formularioDatosBasicos.get('numeroDocumentoCtrl')?.invalid || formularioDatosBasicos.get('periodoCtrl')?.value.length === 0"
+      color="asopagos"
+      type="text"
+      (click)="consultarBDUA()"
+      tappable>
+      <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+      VALIDAR
+    </ion-button>
+  </div>
+  <div *ngIf="registroAportanteModel.showBotonBDUA">
+    <ion-button
+      icon-left
+      size="medium"
+      expand="full"
+      color="asopagos"
+      type="text"
+      (click)="true ? irDatosCotizante(formularioDatosBasicos.valid) : correoInvalido()"
+      [disabled]=" !formularioDatosBasicos.valid && correoValidar(formularioDatosBasicos.get('emailCtrl')?.value)">
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      Siguiente
+    </ion-button>
+  </div>
+</ion-card>

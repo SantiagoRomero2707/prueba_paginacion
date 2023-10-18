@@ -1,0 +1,195 @@
+<ion-content>
+  <ion-card-header>
+    <ion-label class="msg-bienvenido">
+      BIENVENIDO! {{ registroAportanteModel.primerNombre }}
+      {{ registroAportanteModel.primerApellido }}
+    </ion-label>
+  </ion-card-header>
+  <ion-card>
+    <!--Formulario administradora de riesgos-->
+    <form [formGroup]="formularioDatosAdminRiesgosCcf">
+      <!--Riesgos-->
+      <ion-item *ngIf="registroAportanteModel.ShowRiesgos">
+        <ion-label>Riesgos afiliado</ion-label>
+        <ion-select
+          item-content
+          formControlName="codigoRiesgosCtrl"
+          itemValueField="code"
+          itemTextField="label"
+          (onChange)="cargarClasesRiesgo()">
+        </ion-select>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosAdminRiesgosCcf.get('codigoRiesgosCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <ion-item *ngIf="registroAportanteModel.ShowRiesgos && !['SINARP', 'SINARP'].includes(registroAportanteModel.codigoRiesgosModel.code)">
+        <ion-label>Clase de riesgo</ion-label>
+        <ion-select
+          item-content
+          formControlName="claseRiesgoCtrl"
+          itemValueField="code"
+          itemTextField="label"
+          (onChange)="calcularTotalARL()">
+        </ion-select>
+      </ion-item>
+      <p
+        color="danger"
+        ion-text
+        *ngIf="formularioDatosAdminRiesgosCcf.get('claseRiesgo')?.hasError('required')
+        "
+      >
+        *Requerido
+      </p>
+      <ion-item *ngIf="registroAportanteModel.ShowRiesgos">
+        <ion-label floating>Total Riesgos Laborales</ion-label>
+        <ion-input
+          class="input-color"
+          rows="1"
+          disabled
+          [value]="
+            registroAportanteModel.totalPagoArl
+              | currency : 'USD' : 'symbol' : '1.0'
+          "
+        ></ion-input>
+      </ion-item>
+      <ng-container *ngIf="validarActividadRiesgos() && validarClaseRiesgo()">
+        <ion-item *ngIf="registroAportanteModel.ShowRiesgos">
+          <ion-label floating>Actividad Econ&oacute;mica</ion-label>
+          <ion-input
+            class="input-color"
+            maxlength="7"
+            formControlName="actividadRiesgosCtrl"
+            type="text"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <p
+            color="danger"
+            ion-text
+            *ngIf="
+            formularioDatosAdminRiesgosCcf
+                .get('actividadRiesgos')
+                ?.hasError('required')
+            "
+          >
+            *Requerido
+          </p>
+          <p
+            color="danger"
+            ion-text
+            *ngIf="
+            valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgoCtrl') != null &&
+            valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgoCtrl').length > 0 &&
+              !patther.actividadRiesgos.test(
+                valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgoCtrl')
+              )
+            "
+          >
+            Ingrese un n&uacute;mero de m&aacute;ximo 7 d&iacute;gitos
+          </p>
+        </ion-item>
+        <ion-item>
+          <p
+            color="danger"
+            ion-text
+            *ngIf="
+              pipes.cero(valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgos'))
+            "
+          >
+            No puede contener ceros al inicio
+          </p>
+        </ion-item>
+      </ng-container>
+  
+      <!--CCF-->
+      <ion-item>
+        <ion-label>Caja de compensacion afiliado</ion-label>
+        <ion-select
+          
+          item-content
+          formControlName="codigoCCFCtrl"
+          
+          itemValueField="code"
+          itemTextField="label"
+          (onChange)="cargarTarifasCcf()"
+        >
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Tarifa Caja de compensacion</ion-label>
+        <ion-select
+          item-content
+          formControlName="tarifaCcfCtrl"
+          itemValueField="code"
+          itemTextField="label"
+          
+          (onChange)="calcularTotalCCF()"
+        >
+        </ion-select>
+        <p
+          color="danger"
+          ion-text
+          *ngIf="
+          formularioDatosAdminRiesgosCcf.get('tarifaCcf')?.hasError('required')
+          "
+        >
+          *Requerido
+        </p>
+      </ion-item>
+      <ion-item *ngIf="registroAportanteModel.showPagoCcf">
+        <ion-label floating>Total Caja de compensacion</ion-label>
+        <ion-input
+          class="input-color"
+          rows="1"
+          disabled
+          [value]="
+            registroAportanteModel.totalPagoCcf
+              | currency : 'USD' : 'symbol' : '1.0'
+          "
+        ></ion-input>
+      </ion-item>
+    </form>
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          ><ion-button
+            icon-left
+            size="medium"
+            expand="full"
+            color="asopagos"
+            type="text"
+            (click)="backDatosAdminEpsAfp()"
+          >
+            <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+            Anterior
+          </ion-button></ion-col
+        >
+        <ion-col
+          ><ion-button
+            icon-left
+            size="medium"
+            expand="full"
+            color="asopagos"
+            type="text"
+            (click)="formularioDatosAdminRiesgosCcf.valid &&
+              (validarActividadRiesgos()
+                ? !pipes.cero(valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgosCtrl'))
+                : true)
+                ? irDatosLogin(formularioDatosAdminRiesgosCcf.valid)
+                : {}
+            "
+            [disabled]="
+              !formularioDatosAdminRiesgosCcf.valid ||
+              (validarActividadRiesgos()
+                ? pipes.cero(valorCampoFormulario(formularioDatosAdminRiesgosCcf, 'actividadRiesgosCtrl'))
+                : false)
+            "
+          >
+            <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+            Siguiente
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>

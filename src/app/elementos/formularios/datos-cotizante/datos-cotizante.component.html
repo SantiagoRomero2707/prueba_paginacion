@@ -1,0 +1,177 @@
+<ion-card>
+  <ion-card-header>
+    <ion-label class="msg-bienvenido"
+      >BIENVENIDO! {{ registroAportanteModel.primerNombre }}
+      {{ registroAportanteModel.primerApellido }}</ion-label
+    >
+  </ion-card-header>
+  <ng-container *ngIf="cotizante69; else tab2">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Tipo Cotizante:</ion-card-subtitle>
+        <ion-card-title>{{ registroAportanteModel.tipoCotizante.label }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label floating class="label-float">D&iacute;as:</ion-label>
+          {{ registroAportanteModel.cot69Dias }}
+        </ion-item>
+        <ion-item>
+          <ion-label floating class="label-float">Valor:</ion-label>
+          {{ registroAportanteModel.cot69Valor | currency : "USD" : "symbol" : "1.0" }}
+        </ion-item>
+        <ion-card-header>
+          <ion-card-title>Recuerde:</ion-card-title>
+          <ion-card-subtitle
+            >De acuerdo a la resoluci&oacute;n 939 de 2022 los d&iacute;as
+            reportados y el valor del aporte a salud para el cotizante 69 -
+            contribuyente solidario, son relacionados por ADRES, por lo
+            tanto, no se pueden modificar.</ion-card-subtitle
+          >
+        </ion-card-header>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+  <ng-template #tab2>
+    <form [formGroup]="formularioDatosCotizante">
+      <ng-container *ngIf="!listUnDef('tipoCotizanteList')">
+        <ion-item>
+          <ion-label floating class="label-float">Tipo Cotizante:</ion-label>
+          <ion-select
+            item-content
+            formControlName="tipoCotizanteCtrl"
+            itemValueField="code"
+            itemTextField="label"
+            class="search-bar"
+            (onChange)="subTipoCotizanteLoad($event)">
+          </ion-select>
+        </ion-item>
+      </ng-container>
+      <app-load *ngIf="listUnDef('tipoCotizanteList')"></app-load>
+      <ng-container *ngIf="ModelCode('tipoCotizanteModel')">
+        <ion-item>
+          <ion-label floating class="label-float">SubTipo Cotizante:</ion-label>
+          <ion-select
+            item-content
+            formControlName="subTipoCotizanteCtrl"
+            itemValueField="code"
+            itemTextField="label"
+            class="search-bar"
+            (onChange)="subTipoCotizanteChange($event)">
+          </ion-select>
+        </ion-item>
+        <app-load *ngIf="listUnDef('subTipoCotizanteList')"></app-load>
+      </ng-container>
+      <ion-item *ngIf="registroAportanteModel.showColombiano">
+        <ion-label>Es residente en el exterior</ion-label>
+        <ion-select
+          #r
+          placeholder=".:SELECCIONE UNO:."
+          formControlName="residenteExteriorCtrl"
+          (ionChange)="onChangeResidente(r.value); val2()"
+          interface="alert">
+          <ion-select-option value="false">NO</ion-select-option>
+          <ion-select-option value="true">SI</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item
+        *ngIf="
+          registroAportanteModel.showColombiano &&
+          registroAportanteModel.showResidenteExterior
+        "
+      >
+        <ion-label>fecha Radicacion:</ion-label>
+        <ion-datetime
+          formControlName="fechaRadicacionExtCtrl"
+          displayFormat="YYYY MM DD"
+          placeholder="Select Fecha"
+          min="1995-01-01"
+          max="{{ frontModel.maxFecha }}"
+        ></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="registroAportanteModel.showExtranjero">
+        <ion-label>Es extranjero no obligado a cotizar Pension?</ion-label>
+        <ion-select
+          placeholder=".:SELECCIONE UNO:."
+          formControlName="extranjeroCtrl"
+          interface="alert">
+          <ion-select-option value="false">NO</ion-select-option>
+          <ion-select-option value="true">SI</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Total ingresos mensuales</ion-label>
+        <ion-input
+          formControlName="salarioCtrl"
+          type="text"
+          (ionChange)="cuarentaSalarioEvent(); val2()"
+          (ionBlur)="validateMinCuarenta()"
+        ></ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosCotizante.get('salarioCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+      <ion-item>
+        <ion-label floating>Base de cotizaci&oacute;n</ion-label>
+        <ion-input
+          formControlName="cuarentaSalarioCtrl"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosCotizante.get('cuarentaSalarioCtrl')?.hasError('required')">
+        El valor de este campo no puede ser menor al 40% del salario
+      </p>
+      <ion-item>
+        <ion-label floating>fecha Ingreso:</ion-label>
+        <ion-datetime
+          class="input-color"
+          formControlName="fechaIngresoCtrl"
+          displayFormat="YYYY MM DD"
+          [cancelText]="'Cancelar'"
+          [doneText]="'Continuar'"
+          min="{{ registroAportanteModel.periodo }}"
+          max="{{ registroAportanteModel.periodo }}"
+          (ionBlur)="validarFecha(formularioDatosCotizante.get('fechaIngresoCtrl')?.value); val2()">
+        </ion-datetime>
+      </ion-item>
+      <p color="danger" ion-text *ngIf="formularioDatosCotizante.get('fechaIngresoCtrl')?.hasError('required')">
+        *Requerido
+      </p>
+    </form>
+  </ng-template>
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        ><ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="irDatosBasicos()"
+        >
+          <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+          Anterior
+        </ion-button></ion-col
+      >
+      <ion-col
+        ><ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="
+            cotizante69
+              ? irDatosLogin(true)
+              : irdatosAdminEpsAfpForm(formularioDatosCotizante.valid)
+          "
+          [disabled]="!formularioDatosCotizante.valid && !cotizante69"
+        >
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          Siguiente
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
