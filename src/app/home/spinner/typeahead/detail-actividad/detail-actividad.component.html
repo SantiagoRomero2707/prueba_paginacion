@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!--<ion-button (click)="getBackToComponent()">Cancelar</ion-button> Falta implementar boton de cancelar --> 
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="aceptarActividad(itemSeleccionadoTemporal)">Aceptar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-label>Este es el código de la actividad {{ (this.selectedActividadTemporal$ | async)?.code  }}</ion-label>
+    <br>
+    <ion-label>Este es el label de la actividad {{ (this.selectedActividadTemporal$ | async)?.label  }}</ion-label>
+  </ion-card>
+</ion-content>

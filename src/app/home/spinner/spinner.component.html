@@ -1,0 +1,25 @@
+<ion-content color="light">
+  <ion-list [inset]="true">
+    <ion-item>
+      <div slot="justify"></div>
+      <ion-label>Activiades Riesgo</ion-label>
+    </ion-item>
+    <ion-item [button]="true" [detail]="false" id="select-actividades-riesgo">
+      <div slot="start" id="select-actividades-riesgo">{{ labelPorDefectoText }}</div>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-modal trigger="select-actividades-riesgo" #modal>
+  <ng-template>
+    <app-typeahead
+      class="ion-page"
+      title="Actividad Riesgos"
+      [items]="actividadesRiesgos"
+      [selectedItems]="actividadesSeleccionadas"
+      (selectionChange)="actividadesSelectionChanged($event)"
+      (selectionCancel)="modal.dismiss()">
+    </app-typeahead>
+  </ng-template>
+</ion-modal>
+

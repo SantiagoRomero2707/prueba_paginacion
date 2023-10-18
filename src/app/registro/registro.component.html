@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="asopagos">
+    <ion-icon name="{{ frontModel.icono }}" slot="start"></ion-icon>
+    <ion-title>{{ frontModel.title }}</ion-title>
+    <ion-buttons slot="end" (click)="irHome()">
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <!-- Datos Basicos del aportante -->
+  <div *ngIf="registroAportanteModel.showDatosBasicos">
+    <app-datos-basicos-aportante></app-datos-basicos-aportante>
+  </div>
+  <!-- Datos Cotizante -->
+  <div *ngIf="registroAportanteModel.showDatosCotizante">
+    <app-datos-cotizante></app-datos-cotizante>
+  </div>
+  <!-- Datos administadoras de eps  y fondos de pensiones -->
+  <div *ngIf="registroAportanteModel.showDatosAdminEpsAfp">
+    <app-datos-afp-eps></app-datos-afp-eps>
+  </div>
+  <!-- DatosAdminRiesgos -->
+  <div *ngIf="registroAportanteModel.showDatosAdminRiesgosCcf">
+    <app-datos-admin-riesgos></app-datos-admin-riesgos>
+  </div>
+  <!-- Datos de acceso a los sistemas de Asopagos -->
+  <div *ngIf="registroAportanteModel.showUser">
+    <app-datos-asopagos-sistemas></app-datos-asopagos-sistemas>
+  </div>
+</ion-content>

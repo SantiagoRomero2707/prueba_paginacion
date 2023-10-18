@@ -1,0 +1,137 @@
+<ion-card>
+  <ion-card-header>
+    <ion-label class="msg-bienvenido"
+      >BIENVENIDO! {{ registroAportanteModel.primerNombre }}
+      {{ registroAportanteModel.primerApellido }}</ion-label
+    >
+  </ion-card-header>
+  <form [formGroup]="formularioDatosAsoPagosUsuario">
+    <ion-item>
+      <ion-label floating>Como desea pagar su planilla?</ion-label>
+      <ion-select
+        item-content
+        formControlName="modalidadPagoCtrl"
+        itemValueField="code"
+        itemTextField="label"
+        (onChange)="validarModalidad($event)">
+      </ion-select>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAsoPagosUsuario.get('modalidadPagoCtrl')?.hasError('required')">
+      *Requerido
+    </p>
+    <ion-item>
+      <ion-label floating>Usuario</ion-label>
+      <ion-input
+        class="input-color"
+        formControlName="usuarioAliasCtrl"
+        type="text">
+      </ion-input>
+    </ion-item>
+    <p color="danger" ion-text *ngIf="formularioDatosAsoPagosUsuario.get('usuarioAliasCtrl')?.hasError('required')">
+      *Requerido
+    </p>
+    <p color="danger" ion-text *ngIf="formularioDatosAsoPagosUsuario.get('usuarioAliasCtrl')?.hasError('validateUser')">
+      El usuario ingresado ya existe
+    </p>
+    <p color="danger" ion-text *ngIf="formularioDatosAsoPagosUsuario.get('usuarioAliasCtrl')?.hasError('minlength')">
+      El usuario debe tener al menos 6 cáracteres
+    </p>
+    <ng-container *ngIf="h">
+      <app-passwd 
+        [value]="formularioDatosAsoPagosUsuario.get('datosAccesoAsopagos').get('claveCtrl').value" 
+        [user]="formularioDatosAsoPagosUsuario.get('datosAccesoAsopagos').get('usuarioAliasCtrl').value"
+        [document]="formularioDatosAsoPagosUsuario.get('datosBasicoAportante').get('numeroDocumentoCtrl').value">
+      </app-passwd>
+    </ng-container>
+    <ion-item>
+      <ion-label floating>Clave</ion-label>
+      <ion-input
+        class="input-color"
+        [attr.type]="y ? 'text' : 'password'"
+        formControlName="claveCtrl"
+        (ionBlur)="valPass()"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Confirmar Clave</ion-label>
+      <ion-input
+        [attr.type]="y ? 'text' : 'password'"
+        formControlName="confirmarClaveCtrl"
+        (ionBlur)="valPass()"
+      ></ion-input>
+    </ion-item>
+    <ion-row class="ion-justify-content-end">
+      <ion-col size="1" class="ion-text-end">
+        <i 
+        [attr.class]="'fa fa-question-circle' + (h ? '-o' : '')"
+        (click)="h = !h"
+         color="primary">
+        </i>
+      </ion-col>
+      <ion-col size="1" class="ion-text-end">
+        <i
+          [attr.class]="'fa fa-eye' + (y ? '-slash' : '')"
+          (click)="y = !y">
+        </i>
+      </ion-col>
+    </ion-row>
+    <p color="danger" ion-text 
+      *ngIf="formularioDatosAsoPagosUsuario.get('datosAccesoAsopagos')?.get('claveCtrl')?.hasError('pattern')">
+      La clave ingresada no es segura
+    </p>
+    <p color="danger" ion-text
+      *ngIf="formularioDatosAsoPagosUsuario.get('datosAccesoAsopagos')?.get('confirmarClaveCtrl')?.hasError('equalTo')">
+      La clave no coincide con la anterior
+    </p>
+    <ion-item>
+      <ion-label class="tratamientoData"
+        >Autorizo el tratamiento de mis datos personales para las
+        finalidades establecidas en la Política del Operador de Información,
+        conforme a lo dispuesto en la Ley 1581 de 2012 y sus Decretos
+        Reglamentarios.</ion-label
+      >
+      <ion-checkbox
+        formControlName="autorizoTratamientoDatosCtrl"
+      ></ion-checkbox>
+    </ion-item>
+    <p
+      color="danger"
+      ion-text
+      *ngIf="formularioDatosAsoPagosUsuario.get('autorizoTratamientoDatosCtrl')?.hasError('tratamientoData')">
+      Debe aceptar el tratamiento de datos personales
+    </p>
+    <ion-item>
+      <button ion-button (click)="direccionarTerminosCondicionesPage()">
+        Ver Terminos y Condiciones
+      </button>
+    </ion-item>
+  </form>
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        ><ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="cotizante69 ? retornoCotizante() : backDatosAdminCcf(true)">
+          <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+          Anterior
+        </ion-button></ion-col>
+      <ion-col
+        ><ion-button
+          icon-left
+          size="medium"
+          expand="full"
+          color="asopagos"
+          type="text"
+          (click)="registrarIndependiente()"
+          [disabled]="!formularioDatosAsoPagosUsuario.valid">
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          GUARDAR
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>

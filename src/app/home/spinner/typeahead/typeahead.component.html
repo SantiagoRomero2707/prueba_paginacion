@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-buttons slot="start"><ion-button (click)="cancelChanges()">Cancelar</ion-button></ion-buttons> Falta implementar boton y función de cancelar evento--> 
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end"><ion-button (click)="confirmChanges()">Aceptar</ion-button></ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar><ion-searchbar show-cancel-button="focus" placeholder="Buscar Actividades" (ionInput)="searchbarInput($event)"></ion-searchbar></ion-toolbar>
+</ion-header>
+
+<ion-content color="light" class="ion-padding">
+  <ion-radio-group [allowEmptySelection]="true" [value]="defaultActividad">
+    <ion-list  id="modal-list" [inset]="true" *ngFor="let item of filteredItems; let i = index; trackBy: trackItems">
+      <ion-item>
+        <ion-radio
+          #ionRadio
+          [value]="item.code"
+          justify="space-between"
+          [id]="'item-' + ((i+1).toString())"
+          (click)="showBubbleButton(item)">
+            {{ item.label }}
+        </ion-radio>
+      </ion-item><br>
+
+      <ion-item *ngIf="radioSelected === item.code" [class.slide-in]="itemSeleccionadoTemporal.showButton" [class.slide-out]="!itemSeleccionadoTemporal.showButton">    
+        <ion-button justify="end" shape="round" (click)="navigateToAnotherComponent(itemSeleccionadoTemporal)"> 
+          Detalle <ion-icon name="add"></ion-icon>
+        </ion-button>
+        <app-detail-actividad hidden="true"></app-detail-actividad>
+      </ion-item>    
+    </ion-list>
+  </ion-radio-group>
+
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
+</ion-content>
+
